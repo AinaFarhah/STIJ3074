@@ -1,15 +1,18 @@
 <?php
 session_start();
 
+
 if (isset($_POST['email']) && isset($_POST['password'])) {
     include 'db.php';
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+
     // Prepare and execute the SQL statement
     $stmt = $conn->prepare("SELECT id, name, password FROM users WHERE email = ?");
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
 
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION["email"] = $email;
@@ -22,6 +25,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,23 +40,32 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
     <header class="w3-center w3-blue-grey w3-padding-32">
         <h1>Clinic</h1>
     </header>
-    <div class="w3-container w3-display-middle w3-light-grey w3-padding-large w3-round-large w3-card-4" style="max-width: 400px;">
-        <h2 class="w3-center">Login</h2>
-        <form id="loginForm" action="login.php" method="POST">
-            <div class="w3-section">
-                <label for="email"><b>Email</b></label>
-                <input type="email" class="w3-input w3-border w3-round" id="email" name="email" required>
+    <div style="min-height:66vh;overflow-y: auto;">
+        <div class="w3-container w3-display-middle w3-light-grey w3-padding-large w3-round-large w3-card-4" style="max-width: 400px;">
+            <h2 class="w3-center">Login</h2>
+            <form id="loginForm" action="login.php" method="POST">
+                <div class="w3-section">
+                    <label for="email"><b>Email</b></label>
+                    <input type="email" class="w3-input w3-border w3-round" id="email" name="email" required>
+                </div>
+                <div class="w3-section">
+                    <label for="password"><b>Password</b></label>
+                    <input type="password" class="w3-input w3-border w3-round" id="password" name="password" required>
+                </div>
+                <?php if (isset($error_message)): ?>
+                    <p class="w3-text-red w3-center"><?php echo htmlspecialchars($error_message); ?></p>
+                <?php endif; ?>
+                <button type="submit" class="w3-button w3-block w3-blue w3-round-large w3-padding">Login</button>
+            </form>
+            <div class="w3-center w3-margin-top">
+                <p>Don't have an account? <a href="register.php" class="w3-button w3-green w3-round-large">Register</a></p>
             </div>
-            <div class="w3-section">
-                <label for="password"><b>Password</b></label>
-                <input type="password" class="w3-input w3-border w3-round" id="password" name="password" required>
-            </div>
-            <button type="submit" class="w3-button w3-block w3-blue w3-round-large w3-padding">Login</button>
-        </form>
-        <p id="errorMessage" class="w3-text-red w3-center"></p>
-        <div class="w3-center w3-margin-top">
-            <p>Don't have an account? <a href="register.php" class="w3-button w3-green w3-round-large">Register</a></p>
-        </div>
+        </div> 
     </div>
+    <!-- Footer -->
+    <footer class="w3-container w3-center w3-blue-grey">
+            <p>Copyright &copy;</p>
+    </footer> 
 </body>
 </html>
+
